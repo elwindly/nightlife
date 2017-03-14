@@ -10,3 +10,4 @@ if(env ==='development' || env ==='test'){
         process.env[key] = envConfig[key];
     });
 }
+

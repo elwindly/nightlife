@@ -48,7 +48,7 @@ router.post('/login',(req,res)=>{
         return user.generateAuthToken().then((token)=>{
             req.session.xAuth = token;
             req.session.name = user.name;
-            res.redirect('/userLogged');
+           res.redirect('/');
         });
     }).catch((e)=>{
         res.status(409).send({message: "Invalid username. email or password"});

@@ -1,12 +1,13 @@
 {
     "test":{
         "PORT":3000,
-        "MONGODB_URI": "mongodb://localhost:27017/VotingAppTest",
+        "MONGODB_URI": "mongodb://localhost:27017/nightlife",
         "JWT_SECRET":"drhgdthedhsrhhrs4z5zzh5z56z"
+    
     },
     "development":{
         "PORT":3000,
-        "MONGODB_URI": "mongodb://localhost:27017/VotingApp",
+        "MONGODB_URI": "mongodb://localhost:27017/nightlife",
         "JWT_SECRET":"drhtz56z6zu6uj6hsrhhrs4z5zzh5z56z"
     }
 }

@@ -1,6 +1,5 @@
-body {
+body{
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 #chart {
   background-color: powderblue;
@@ -15,13 +14,14 @@ a:link {
 a:hover {
     text-decoration: none;
 }
-.panel{
-  text-align: center;
+.media{
+  background: powderblue;
   margin:5px;
+  padding:5px;
 }
 
-.panel:hover{
-  background: powderblue;
+.media:hover{
+  background: lightgreen;
 }
 #new{
   margin-top:10px;

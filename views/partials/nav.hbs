@@ -1,21 +1,14 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/">Polling Station</a>
+      <a class="navbar-brand" href="/">NightLife</a>
     </div>
-   {{#if isLoggedIn}}
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="/">Home</a></li>
-      <li><a href="/userLogged">My Polls</a></li>
-      <li><a href="/userLogged/newPoll">New Poll</a></li>
-    </ul>
-    {{/if}}
     <ul class="nav navbar-nav navbar-right">
     {{#if isLoggedIn}}
     <li><a href="#" name="logOut" id="logOut"><span class="glyphicon glyphicon-user"></span> Log out</a></li>
     {{else}}
       <li><a href="#" data-toggle="modal" data-target="#signUpModal"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href="#" data-toggle="modal" data-target="#loginModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a  href="#" data-toggle="modal" data-target="#loginModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
       {{/if}}
     </ul>
   </div>
