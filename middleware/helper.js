@@ -14,7 +14,7 @@ const yelp = new Yelp({
 });
 
 let yelpSearch = (location, userToTest) =>{
-    return yelp.search({ term: 'nightlife', location: location, limit:4 })
+    return yelp.search({ term: 'nightlife', location: location, limit:10 })
     .then(function (data) {
       let arr = data.businesses;
         return Place.find({city:location}).then((found)=>{
