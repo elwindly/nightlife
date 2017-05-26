@@ -35,8 +35,16 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+app.use((req, res, next) => {
+  res.locals.user =  req.session.name;
+  next();
+});
+
 app.use('/', index);
 app.use('/users', users);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

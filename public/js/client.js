@@ -1,5 +1,14 @@
 var baseUrl = location.origin;
 
+// Overlay control
+function on() {
+    document.getElementById("overlay").style.display = "block";
+}
+
+function off() {
+    document.getElementById("overlay").style.display = "none";
+}
+
     function handleClick(e){
         let updateCounter = e.name == -1 ? 1 : -1;
         let city = $('#search').val();
@@ -10,7 +19,7 @@ var baseUrl = location.origin;
                 data: data,
                 success: function(data, textStatus, request) {
                     if (data.shouldLogIn){
-                        alert("You need to sign up/log in to use this function");
+                        on();
                     }else{
                         if (e.name == -1) {
                             e.name = "1";
@@ -22,11 +31,22 @@ var baseUrl = location.origin;
                     }                   
                 },
                 error: function(e) {
-                    console.log(e);
                     alert('"It did not work!"');
                 }
             });
     };
+
+    function addWarning(selector, message) {
+        $(selector).html('');
+        var html = 
+            `
+            <div class="alert alert-warning alert-dismissable fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>${message}</strong> 
+            </div>               
+        `;
+            $(selector).append(html);
+    }
 
 
 
@@ -38,6 +58,9 @@ if(typeof(Storage) !== "undefined" && localStorage.getItem('search')){
     getYelpSearchResult(searchTerm);
     localStorage.removeItem("search");
 }
+
+
+
 
 
 function infoPanelBuilder(arr){
@@ -71,21 +94,17 @@ function infoPanelBuilder(arr){
 
 function getYelpSearchResult(searchTerm) {
     let data = {searchTerm: searchTerm};
-    $.ajax({
-        url: `${baseUrl}/term`,
-        type: 'POST',
-        data: data,
-        success: function(data, textStatus, request) {
+    ajaxRequest(`${baseUrl}/term`, 'POST', data, function(err, data) {
+         if (!err) {
             infoPanelBuilder(data);
             if(typeof(Storage) !== "undefined"){
                 localStorage.setItem("search", searchTerm);
             }
-        },
-        error: function(e) {
-            console.log(e);
-            alert('"It did not work!"');
+        } else {
+             addWarning('#commonError', "Please select a valid place!");    
         }
     });
+    
 }
 
     $('#search').keypress(function(event){
@@ -96,70 +115,71 @@ function getYelpSearchResult(searchTerm) {
         }
     });
 
-    jQuery('#login').on('submit',function(e){
+///// User handling logic start  
+
+    //modal handling
+
+    $('#loginModal').modal({ backdrop: 'static', keyboard: false, show: false });
+    $('#signUpModal').modal({ backdrop: 'static', keyboard: false, show: false });
+
+
+    $('#loginModal').on('hide.bs.modal', function () {
+        $('#loginError').empty();
+        jQuery('[name=emailLog]').val('');
+        jQuery('[name=pwdLog]').val('');
+    })
+
+    $('#signUpModal').on('hide.bs.modal', function () {
+        $('#signUpError').empty();
+        jQuery('[name=email]').val('');
+        jQuery('[name=password]').val('');
+        jQuery('[name=name]').val('');
+    })
+
+
+    //user login
+    jQuery('#login').on('submit', function(e){
         e.preventDefault();
-        var email = jQuery('[name=emailLog]').val();
-        var pwd = jQuery('[name=pwdLog]').val();
         var data ={
-            emailLog:email,
-            pwdLog:pwd
+            emailLog:jQuery('[name=emailLog]').val(),
+            pwdLog:jQuery('[name=pwdLog]').val()
         };
-        $.ajax({
-            url: `${baseUrl}/users/login`,
-            type: 'POST',
-            data: data,
-            success: function(data, textStatus, request) {
-            //$('#loginModal').modal('hide');     
+        ajaxRequest(`${baseUrl}/users/login`, 'POST', data, function(err, data) {
+            if (!err) {
                 window.location.replace('/');
-            },
-            error: function(e) {
-                console.log(e);
-                alert('"Invalid username. email or password"');
+            } else {
+                addWarning('#loginError', "Invalid Credentials");    
             }
         });
-    
     });
 
-
-
+    //user signup
     jQuery('#signUp').on('submit',function(e){
         e.preventDefault();
-        var email = jQuery('[name=email]').val();
-        var pwd = jQuery('[name=password]').val();
-        var name = jQuery('[name=name]').val();
         var data ={
-            email:email,
-            password:pwd,
-            name:name
+            email:jQuery('[name=email]').val(),
+            password:jQuery('[name=password]').val(),
+            name:jQuery('[name=name]').val()
         };
-        $.ajax({
-            url: `${baseUrl}/users`,
-            type: 'POST',
-            data: data,
-            success: function(data, textStatus, request) {
-            $('#signUpModal').modal('hide');     
-            window.location.replace('/');        
-            },
-            error: function(e) {
-                console.log(e);
-                alert("Username or email is already in use!");
+        ajaxRequest(`${baseUrl}/users`, 'POST', data, function(err, data) {
+            if (!err) {
+                window.location.replace('/');
+            } else {
+                addWarning('#signUpError', err.responseText);
             }
         });
     });
 
-
-
+    //user log out
     jQuery('#logOut').on('click',function(e){
         e.preventDefault();
-        $.ajax({
-            url: `${baseUrl}/users/me/token`,
-            type: 'DELETE',
-            success: function(result) {
+        ajaxRequest(`${baseUrl}/users/me/token`, 'DELETE', {}, function(err, data) {
+            if (!err) {
                 window.location.replace('/');
-                alert('You succesfully logged out');
-            }
+            } 
         });
     });
+ ///// User handling logic end
 
          var cities = [
             'Buenos Aires',

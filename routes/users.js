@@ -6,21 +6,18 @@ const {authenticate} = require('./../middleware/authenticate');
 
 const {User} = require('./..//models/members');
 
-/* GET users listing. */
-router.get('/',function(req, res, next) {
-  res.send('respond with a resource');
-});
 
+//sign up
 router.post('/', (req,res)=> {
     var body = _.pick(req.body,['email','name','password']);
 
     User.findOne({email:body.email}).then((user)=>{
     if(user){
-        res.status(409).send({message:'User already exist'});
+        return res.status(409).send('Email is already in use!');
     }else{
         User.findOne({name:body.name}).then((user)=>{
             if(user){
-                res.status(409).send({message:'User already exist'});     
+                res.status(409).send('Username is already in use!');     
             }else{
                var user = new User(body);
 
@@ -32,7 +29,7 @@ router.post('/', (req,res)=> {
                     req.session.name = body.name;
                     res.status(200).send();
                 }).catch((e)=>{
-                    res.status(400).send(e)
+                    res.status(400).send({message: "Invalid Credentials"})
                 });
             }       
         });
@@ -48,10 +45,10 @@ router.post('/login',(req,res)=>{
         return user.generateAuthToken().then((token)=>{
             req.session.xAuth = token;
             req.session.name = user.name;
-           res.redirect('/');
+            res.redirect('/');
         });
     }).catch((e)=>{
-        res.status(409).send({message: "Invalid username. email or password"});
+        res.status(409).send({message: "Invalid Credentials"});
     });
 });
 
@@ -67,5 +64,6 @@ router.delete('/me/token',authenticate,(req,res)=>{
         res.status(400).send();
     });
 });
+
 
 module.exports = router;
