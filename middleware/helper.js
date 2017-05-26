@@ -4,10 +4,7 @@ require('./../config/config');
 const Yelp = require('yelp');
 const _ = require('lodash');
 const {Place} = require('./../models/places');
- process.env.cons_key = 'B6T9grQ0WxX6Co5WXbo9IA';
- process.env.cons_secret = 'mzImLVsN2EThmT-tQ-35f_XrowQ';
- process.env.token = 'V-kjQZQ-bT9OU3EvVZGexbUgfKu5S1Mm';
- process.env.token_secret = 'liCnB4c0ZNJKiLSI76kisUAjqG0';
+
 
 
 const yelp = new Yelp({
